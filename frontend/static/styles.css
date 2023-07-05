@@ -61,6 +61,9 @@ body {
     margin-bottom: 20px;
     padding: 20px;
     position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .post h2 {
@@ -84,8 +87,13 @@ body {
     padding: 5px 10px;
     border-radius: 5px;
     cursor: pointer;
+    position: static;
 }
 
 .post button:hover {
     background-color: #cc0000;
+}
+
+textarea {
+    height: 80px;
 }

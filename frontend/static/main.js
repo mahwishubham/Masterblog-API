@@ -16,6 +16,38 @@ window.onload = function() {
         document.getElementById('search-input').value = savedSearchTerm;
     }
 
+// helper
+function showUpdateForm(postId) {
+    const updateButton = document.getElementById(`updateButton_${postId}`);
+    const updateForm = document.getElementById(`updateForm_${postId}`);
+
+    updateButton.style.display = 'none'; // Hide the "Update" button
+    updateForm.style.display = 'block'; // Display the update form
+}
+
+
+// Function to send a PUT request to the API to update a post
+function updatePost(postId) {
+    var baseUrl = document.getElementById('api-base-url').value;
+    var updatedTitle = document.getElementById('updateTitle_' + postId).value;
+    var updatedContent = document.getElementById('updateContent_' + postId).value;
+
+    // Use the Fetch API to send a PUT request to the specific post's endpoint
+    fetch(baseUrl + '/posts/' + postId, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: updatedTitle, content: updatedContent })
+    })
+    .then(response => response.json())  // Parse the JSON data from the response
+    .then(post => {
+        console.log('Post updated:', post);
+        loadPosts(); // Reload the posts after updating one
+    })
+    .catch(error => console.error('Error:', error));  // If an error occurs, log it to the console
+}
+
+
+
 // Function to fetch all the posts from the API and display them on the page
 function loadPosts() {
     // Retrieve the base URL from the input field and save it to local storage
@@ -36,9 +68,14 @@ function loadPosts() {
                 <h2>${post.title}</h2>
                 <p>${post.content}</p>
                 <div class="button-container">
-                    <button onclick="showUpdateForm(${post.id})">Update</button>
+                    <button id="updateButton_${post.id}" onclick="showUpdateForm(${post.id})">Update</button>
                     <button onclick="deletePost(${post.id})">Delete</button>
-                </div>`;
+                </div>
+                <form class="update-form" id="updateForm_${post.id}" style="display: none;">
+                    <input type="text" id="updateTitle_${post.id}" placeholder="New Title">
+                    <textarea id="updateContent_${post.id}" placeholder="New Content"></textarea>
+                    <button onclick="updatePost(${post.id})">Save</button>
+                 </form>`;
             postContainer.appendChild(postDiv);
         });
     })
@@ -81,24 +118,3 @@ function deletePost(postId) {
     })
     .catch(error => console.error('Error:', error));  // If an error occurs, log it to the console
 }
-
-// Function to send a PUT request to the API to update a post
-function updatePost(postId) {
-    var baseUrl = document.getElementById('api-base-url').value;
-    var updatedTitle = document.getElementById('updated-title').value;
-    var updatedContent = document.getElementById('updated-content').value;
-
-    // Use the Fetch API to send a PUT request to the specific post's endpoint
-    fetch(baseUrl + '/posts/' + postId, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title: updatedTitle, content: updatedContent })
-    })
-    .then(response => response.json())  // Parse the JSON data from the response
-    .then(post => {
-        console.log('Post updated:', post);
-        loadPosts(); // Reload the posts after updating one
-    })
-    .catch(error => console.error('Error:', error));  // If an error occurs, log it to the console
-}
-

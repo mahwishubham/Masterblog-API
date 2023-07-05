@@ -97,3 +97,33 @@ body {
 textarea {
     height: 80px;
 }
+
+
+.update-form {
+    display: none;
+    margin-top: 20px;
+}
+
+.update-form input,
+.update-form textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+    margin-bottom: 10px;
+}
+
+.update-form button {
+    background-color: #4466ee;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.update-form button:hover {
+    background-color: #3355dd;
+}

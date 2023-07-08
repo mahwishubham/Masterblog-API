@@ -20,6 +20,13 @@
             <button onclick="addPost()">Add Post</button>
 
         </div>
+        <div>
+          <button id="searchButton" onclick="toggleSearchInput()">Search</button>
+          <input type="text" id="searchInput" placeholder="Search" style="display: none;">
+          <button id="enterButton" onclick="searchPosts()" style="display: none;">Enter</button>
+          <button id="cancelButton" onclick="cancelSearch()" style="display: none;">Cancel</button>
+        </div>
+
         <div id="post-container">
             <!-- Blog posts will be inserted here by JavaScript -->
         </div>

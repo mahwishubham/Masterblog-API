@@ -127,3 +127,27 @@ textarea {
 .update-form button:hover {
     background-color: #3355dd;
 }
+
+#searchButton {
+    background-color: #4466ee;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#searchInput {
+    padding: 10px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+#enterButton {
+  background-color: #4466ee;
+  color: white;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  font-size:

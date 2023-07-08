@@ -9,13 +9,6 @@ window.onload = function() {
     }
 }
 
-    // Attempt to retrieve the previous search term from local storage
-    var savedSearchTerm = localStorage.getItem('searchTerm');
-    // If a search term is found in local storage, set it in the input field
-    if (savedSearchTerm) {
-        document.getElementById('search-input').value = savedSearchTerm;
-    }
-
 // helper
 function showUpdateForm(postId) {
     const updateButton = document.getElementById(`updateButton_${postId}`);
@@ -24,7 +17,6 @@ function showUpdateForm(postId) {
     updateButton.style.display = 'none'; // Hide the "Update" button
     updateForm.style.display = 'block'; // Display the update form
 }
-
 
 // Function to send a PUT request to the API to update a post
 function updatePost(postId) {
@@ -46,7 +38,81 @@ function updatePost(postId) {
     .catch(error => console.error('Error:', error));  // If an error occurs, log it to the console
 }
 
+// Function to show the search input field when the search button is clicked
+function showSearchInput() {
+    var searchInput = document.getElementById('searchInput');
+    if (searchInput.style.display === 'none') {
+        searchInput.style.display = 'block';
+        searchInput.focus();
+    } else {
+        searchInput.style.display = 'none';
+        searchInput.value = '';
+        loadPosts();
+    }
+}
 
+// Function to toggle the display of search input and buttons
+function toggleSearchInput() {
+  var searchInput = document.getElementById('searchInput');
+  var enterButton = document.getElementById('enterButton');
+  var cancelButton = document.getElementById('cancelButton');
+
+  if (searchInput.style.display === 'none') {
+    searchInput.style.display = 'block';
+    enterButton.style.display = 'inline';
+    cancelButton.style.display = 'inline';
+    searchInput.focus();
+  } else {
+    searchInput.style.display = 'none';
+    enterButton.style.display = 'none';
+    cancelButton.style.display = 'none';
+    searchInput.value = '';
+    loadPosts();
+  }
+}
+
+// Function to search for posts by title or content
+function searchPosts() {
+  var baseUrl = document.getElementById('api-base-url').value;
+  var searchText = document.getElementById('searchInput').value;
+
+  // Use the Fetch API to send a GET request to the /api/posts/search endpoint with the search query
+  fetch(baseUrl + '/posts/search?text=' + encodeURIComponent(searchText))
+    .then(response => response.json())
+    .then(data => {
+        // get the post container
+        const postContainer = document.getElementById('post-container');
+
+        // mark the post container as empty
+        postContainer.innerHTML = '';
+
+        data.forEach(post => {
+            const postDiv = document.createElement('div');
+            postDiv.className = 'post';
+            postDiv.innerHTML = `
+                <h2>${post.title}</h2>
+                <p>${post.content}</p>
+                <div class="button-container">
+                    <button id="updateButton_${post.id}" onclick="showUpdateForm(${post.id})">Update</button>
+                    <button onclick="deletePost(${post.id})">Delete</button>
+                </div>
+                <form class="update-form" id="updateForm_${post.id}" style="display: none;">
+                    <input type="text" id="updateTitle_${post.id}" placeholder="New Title">
+                    <textarea id="updateContent_${post.id}" placeholder="New Content"></textarea>
+                    <button onclick="updatePost(${post.id})">Save</button>
+                 </form>`;
+            postContainer.appendChild(postDiv);
+        });
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+// Function to cancel the search and reset the UI
+function cancelSearch() {
+  var searchInput = document.getElementById('searchInput');
+  searchInput.value = '';
+  toggleSearchInput();
+}
 
 // Function to fetch all the posts from the API and display them on the page
 function loadPosts() {

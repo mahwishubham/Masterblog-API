@@ -7,11 +7,12 @@ CORS(app)  # This will enable CORS for all routes
 POSTS = [
     {"id": 1, "title": "First post", "content": "This is the first post."},
     {"id": 2, "title": "Second post", "content": "This is the second post."},
+    {"id": 3, "title": "My third post", "content": "This is the third post."},
 ]
 
 
 @app.route('/api/posts', methods=['GET', 'POST'])
-def get_posts():
+def handle_posts():
     if request.method == "GET":
         return jsonify(POSTS)
     elif request.method == "POST":
@@ -28,6 +29,19 @@ def get_posts():
             return jsonify({"error": error_message}), 400
 
         return jsonify(POSTS)
+
+
+@app.route('/api/posts/search', methods=["GET"])
+def search_post():
+    searchText = request.args.get('text')
+    search_results = []
+    if searchText is not None:
+        searchText = searchText.lower()
+        for post in POSTS:
+            if searchText in (post['title']).lower() or searchText in (post['content']).lower():
+                search_results.append(post)
+                print(search_results)
+    return jsonify(search_results)
 
 
 @app.route('/api/posts/<int:id>', methods=["DELETE"])

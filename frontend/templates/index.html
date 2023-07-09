@@ -14,6 +14,19 @@
             <input type="text" id="api-base-url" placeholder="Enter API Base URL" value="http://127.0.0.1:5002/api">
             <button onclick="loadPosts()">Load Posts</button>
         </div>
+        <div class="sort-container">
+            <label for="sort-option"><i class="fas fa-sort"></i> Sort Option:</label>
+            <select id="sort-option">
+                <option value="title">Title</option>
+                <option value="content">Content</option>
+            </select>
+            <label for="sort-direction"><i class="fas fa-sort-amount-up"></i> Sort Direction:</label>
+            <select id="sort-direction">
+                <option value="asc">Ascending</option>
+                <option value="desc">Descending</option>
+            </select>
+        </div>
+
         <div class="input-field">
             <input type="text" id="post-title" placeholder="Enter Post Title">
             <input type="text" id="post-content" placeholder="Enter Post Content">

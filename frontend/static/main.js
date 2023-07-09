@@ -120,8 +120,15 @@ function loadPosts() {
     var baseUrl = document.getElementById('api-base-url').value;
     localStorage.setItem('apiBaseUrl', baseUrl);
 
+    // Retrieve the sort option and direction from the input fields
+    var sortOption = document.getElementById('sort-option').value;
+    var sortDirection = document.getElementById('sort-direction').value;
+
+    // Build the API URL with the sort parameters
+    var apiUrl = baseUrl + '/posts?sort=' + sortOption + '&direction=' + sortDirection;
+
     // Use the Fetch API to send a GET request to the /posts endpoint
-   fetch(baseUrl + '/posts')
+   fetch(apiUrl)
     .then(response => response.json())
     .then(data => {
         const postContainer = document.getElementById('post-container');

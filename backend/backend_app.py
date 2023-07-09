@@ -11,10 +11,21 @@ POSTS = [
 ]
 
 
+def sort_helper(posts, key, direction):
+    reverse = direction == "desc"
+    return sorted(posts, key=lambda x: x[key], reverse=reverse)
+
 @app.route('/api/posts', methods=['GET', 'POST'])
 def handle_posts():
     if request.method == "GET":
-        return jsonify(POSTS)
+        # adding sorting functionality
+        # reading query params /api/posts?sort = title & direction = desc
+        sort = request.args.get("sort")
+        direction = request.args.get("direction")
+        posts = POSTS    # creating a local copy
+        if sort and direction:
+            posts = sort_helper(posts, sort, direction)
+        return jsonify(posts)
     elif request.method == "POST":
         id = len(POSTS) + 1
         data = {

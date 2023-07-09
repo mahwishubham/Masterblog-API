@@ -59,8 +59,8 @@ def update_post(id):
     if request.method == "PUT":
         for post in POSTS:
             if post['id'] == id:
-                post["title"] = request.json["title"]
-                post["content"] = request.json["content"]
+                post["title"] = request.json["title"] if request.json["title"] else post["title"]
+                post["content"] = request.json["content"] if request.json["content"] else post["content"]
                 if post['title'] != '' and post['content'] != '':
                     return jsonify(post)
                 else:

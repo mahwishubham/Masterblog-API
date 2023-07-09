@@ -80,10 +80,7 @@ function searchPosts() {
   fetch(baseUrl + '/posts/search?text=' + encodeURIComponent(searchText))
     .then(response => response.json())
     .then(data => {
-        // get the post container
         const postContainer = document.getElementById('post-container');
-
-        // mark the post container as empty
         postContainer.innerHTML = '';
 
         data.forEach(post => {
@@ -113,6 +110,9 @@ function cancelSearch() {
   searchInput.value = '';
   toggleSearchInput();
 }
+
+// Event listener to trigger searchPosts() when Enter key is pressed in the search input field
+// document.getElementById('searchInput').addEventListener('keyup', handleSearchKeyPress);
 
 // Function to fetch all the posts from the API and display them on the page
 function loadPosts() {

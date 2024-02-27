@@ -38,77 +38,71 @@ function updatePost(postId) {
     .catch(error => console.error('Error:', error));  // If an error occurs, log it to the console
 }
 
-// Function to show the search input field when the search button is clicked
-function showSearchInput() {
-    var searchInput = document.getElementById('searchInput');
-    if (searchInput.style.display === 'none') {
-        searchInput.style.display = 'block';
-        searchInput.focus();
+// Function to toggle the display of search inputs and buttons
+function toggleSearchInput() {
+    var searchTitleInput = document.getElementById('searchTitleInput');
+    var searchContentInput = document.getElementById('searchContentInput');
+    var enterButton = document.getElementById('enterButton');
+    var cancelButton = document.getElementById('cancelButton');
+
+    if (searchTitleInput.style.display === 'none') {
+        searchTitleInput.style.display = 'block';
+        searchContentInput.style.display = 'block';
+        enterButton.style.display = 'inline';
+        cancelButton.style.display = 'inline';
+        searchTitleInput.focus();
     } else {
-        searchInput.style.display = 'none';
-        searchInput.value = '';
+        searchTitleInput.style.display = 'none';
+        searchContentInput.style.display = 'none';
+        enterButton.style.display = 'none';
+        cancelButton.style.display = 'none';
+        searchTitleInput.value = '';
+        searchContentInput.value = '';
         loadPosts();
     }
 }
 
-// Function to toggle the display of search input and buttons
-function toggleSearchInput() {
-  var searchInput = document.getElementById('searchInput');
-  var enterButton = document.getElementById('enterButton');
-  var cancelButton = document.getElementById('cancelButton');
-
-  if (searchInput.style.display === 'none') {
-    searchInput.style.display = 'block';
-    enterButton.style.display = 'inline';
-    cancelButton.style.display = 'inline';
-    searchInput.focus();
-  } else {
-    searchInput.style.display = 'none';
-    enterButton.style.display = 'none';
-    cancelButton.style.display = 'none';
-    searchInput.value = '';
-    loadPosts();
-  }
-}
-
 // Function to search for posts by title or content
 function searchPosts() {
-  var baseUrl = document.getElementById('api-base-url').value;
-  var searchText = document.getElementById('searchInput').value;
+    var baseUrl = document.getElementById('api-base-url').value;
+    var searchTitle = document.getElementById('searchTitleInput').value;
+    var searchContent = document.getElementById('searchContentInput').value;
 
-  // Use the Fetch API to send a GET request to the /api/posts/search endpoint with the search query
-  fetch(baseUrl + '/posts/search?text=' + encodeURIComponent(searchText))
-    .then(response => response.json())
-    .then(data => {
-        const postContainer = document.getElementById('post-container');
-        postContainer.innerHTML = '';
+    // Use the Fetch API to send a GET request to the /api/posts/search endpoint with the search queries
+    fetch(`${baseUrl}/posts/search?title=${encodeURIComponent(searchTitle)}&content=${encodeURIComponent(searchContent)}`)
+        .then(response => response.json())
+        .then(data => {
+            const postContainer = document.getElementById('post-container');
+            postContainer.innerHTML = '';
 
-        data.forEach(post => {
-            const postDiv = document.createElement('div');
-            postDiv.className = 'post';
-            postDiv.innerHTML = `
-                <h2>${post.title}</h2>
-                <p>${post.content}</p>
-                <div class="button-container">
-                    <button id="updateButton_${post.id}" onclick="showUpdateForm(${post.id})">Update</button>
-                    <button onclick="deletePost(${post.id})">Delete</button>
-                </div>
-                <form class="update-form" id="updateForm_${post.id}" style="display: none;">
-                    <input type="text" id="updateTitle_${post.id}" placeholder="New Title">
-                    <textarea id="updateContent_${post.id}" placeholder="New Content"></textarea>
-                    <button onclick="updatePost(${post.id})">Save</button>
-                 </form>`;
-            postContainer.appendChild(postDiv);
-        });
-    })
-    .catch(error => console.error('Error:', error));
+            data.forEach(post => {
+                const postDiv = document.createElement('div');
+                postDiv.className = 'post';
+                postDiv.innerHTML = `
+                    <h2>${post.title}</h2>
+                    <p>${post.content}</p>
+                    <div class="button-container">
+                        <button id="updateButton_${post.id}" onclick="showUpdateForm(${post.id})">Update</button>
+                        <button onclick="deletePost(${post.id})">Delete</button>
+                    </div>
+                    <form class="update-form" id="updateForm_${post.id}" style="display: none;">
+                        <input type="text" id="updateTitle_${post.id}" placeholder="New Title">
+                        <textarea id="updateContent_${post.id}" placeholder="New Content"></textarea>
+                        <button onclick="updatePost(${post.id})">Save</button>
+                    </form>`;
+                postContainer.appendChild(postDiv);
+            });
+        })
+        .catch(error => console.error('Error:', error));
 }
 
 // Function to cancel the search and reset the UI
 function cancelSearch() {
-  var searchInput = document.getElementById('searchInput');
-  searchInput.value = '';
-  toggleSearchInput();
+    var searchTitleInput = document.getElementById('searchTitleInput');
+    var searchContentInput = document.getElementById('searchContentInput');
+    searchTitleInput.value = '';
+    searchContentInput.value = '';
+    toggleSearchInput();
 }
 
 // Event listener to trigger searchPosts() when Enter key is pressed in the search input field

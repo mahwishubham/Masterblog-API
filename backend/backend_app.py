@@ -5,12 +5,6 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)  # This will enable CORS for all routes
 
-POSTS = [
-    {"id": getUniqueId(), "title": "First post", "content": "This is the first post."},
-    {"id": getUniqueId(), "title": "Second post", "content": "This is the second post."},
-    {"id": getUniqueId(), "title": "My third post", "content": "This is the third post."},
-]
-
 def sort_helper(posts, key, direction):
     """
     Helper function to sort posts based on a given key and direction.
@@ -34,6 +28,12 @@ def getUniqueId():
         int: Unique ID generated using UUID.
     """
     return uuid.uuid1().int>>64
+
+POSTS = [
+    {"id": getUniqueId(), "title": "First post", "content": "This is the first post."},
+    {"id": getUniqueId(), "title": "Second post", "content": "This is the second post."},
+    {"id": getUniqueId(), "title": "My third post", "content": "This is the third post."},
+]
 
 @app.route('/api/posts', methods=['GET', 'POST'])
 def handle_posts():

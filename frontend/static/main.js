@@ -9,6 +9,12 @@ window.onload = function() {
     }
 }
 
+function sleep(ms) {
+  var start = new Date().getTime(), expire = start + ms;
+  while (new Date().getTime() < expire) { }
+  return;
+}
+
 // helper
 function showUpdateForm(postId) {
     const updateButton = document.getElementById(`updateButton_${postId}`);
@@ -21,14 +27,25 @@ function showUpdateForm(postId) {
 // Function to send a PUT request to the API to update a post
 function updatePost(postId) {
     var baseUrl = document.getElementById('api-base-url').value;
-    var updatedTitle = document.getElementById('updateTitle_' + postId).value;
-    var updatedContent = document.getElementById('updateContent_' + postId).value;
+    var updatedTitle = document.getElementById('updateTitle_' + postId).value.trim();
+    var updatedContent = document.getElementById('updateContent_' + postId).value.trim();
+
+    // Create an object to conditionally include non-empty title and content
+    var dataToUpdate = {};
+    if(updatedTitle != '') {
+        dataToUpdate.title = updatedTitle;
+    }
+    if(updatedContent != '') {
+        dataToUpdate.content = updatedContent;
+    }
+
+    console.log(updatedTitle, updatedContent, dataToUpdate)
 
     // Use the Fetch API to send a PUT request to the specific post's endpoint
     fetch(baseUrl + '/posts/' + postId, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title: updatedTitle, content: updatedContent })
+        body: JSON.stringify(dataToUpdate) // Use the conditionally constructed object
     })
     .then(response => response.json())  // Parse the JSON data from the response
     .then(post => {
@@ -36,6 +53,8 @@ function updatePost(postId) {
         loadPosts(); // Reload the posts after updating one
     })
     .catch(error => console.error('Error:', error));  // If an error occurs, log it to the console
+    
+    sleep(1000)
 }
 
 // Function to toggle the display of search inputs and buttons
@@ -179,6 +198,7 @@ function deletePost(postId) {
     fetch(baseUrl + '/posts/' + postId, {
         method: 'DELETE'
     })
+
     .then(response => {
         console.log('Post deleted:', postId);
         loadPosts(); // Reload the posts after deleting one

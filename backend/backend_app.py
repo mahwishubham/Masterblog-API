@@ -1,9 +1,11 @@
-import uuid
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+import uuid
+import base64
 
 app = Flask(__name__)
 CORS(app)  # This will enable CORS for all routes
+
 
 def sort_helper(posts, key, direction):
     """
@@ -22,17 +24,25 @@ def sort_helper(posts, key, direction):
 
 def getUniqueId():
     """
-    Generate a unique ID for posts.
+    Generate a unique, shorter string ID for posts using UUID4 encoded in base64.
 
     Returns:
-        int: Unique ID generated using UUID.
+        str: Unique, URL-safe base64-encoded UUID4.
     """
-    return uuid.uuid1().int>>64
+    # # Generate a random UUID4
+    # random_uuid = uuid.uuid4().bytes
+    # # Encode the UUID bytes to base64
+    # base64_uuid = base64.urlsafe_b64encode(random_uuid)
+    # # Decode to UTF-8 string and remove base64 padding
+    # unique_id = base64_uuid.decode('utf-8').rstrip('=')
+    # return unique_id
+    return len(POSTS)+1
+
 
 POSTS = [
-    {"id": getUniqueId(), "title": "First post", "content": "This is the first post."},
-    {"id": getUniqueId(), "title": "Second post", "content": "This is the second post."},
-    {"id": getUniqueId(), "title": "My third post", "content": "This is the third post."},
+    {"id": 1, "title": "First post", "content": "This is the first post."},
+    {"id": 2, "title": "Second post", "content": "This is the second post."},
+    {"id": 3, "title": "My third post", "content": "This is the third post."},
 ]
 
 @app.route('/api/posts', methods=['GET', 'POST'])
@@ -87,44 +97,46 @@ def search_post():
 
     return jsonify(search_results)
 
-
 @app.route('/api/posts/<int:id>', methods=["DELETE"])
 def delete_post(id):
     """
     Delete a post based on its ID.
-
+    
     Args:
-        id (int): ID of the post to be deleted.
-
+        id (int): ID of the post to be deleted as a string.
+    
     Returns:
         json: Confirmation message if post is deleted, error message if post is not found.
     """
-    if request.method == "DELETE":
-        for post in POSTS:
-            if post['id'] == id:
-                POSTS.remove(post)
-                return jsonify({'message': f'Post with ID # {id} is deleted'})
-        return jsonify({'error': 'Post not found'}), 404
+    # Try to convert id to integer, handle large integers and strings safely.
+    print(id, POSTS)
+    for post in POSTS:
+        if post['id'] == id:
+            POSTS.remove(post)
+            return jsonify({'message': f'Post with ID # {id} is deleted'})
+    return jsonify({'error': 'Post not found'}), 404
 
 @app.route('/api/posts/<int:id>', methods=["PUT"])
 def update_post(id):
     """
     Update a post based on its ID.
-
+    
     Args:
-        id (int): ID of the post to be updated.
-
+        id (int): ID of the post to be updated as a string.
+    
     Returns:
         json: Updated post if found, error message if post is not found.
     """
-    if request.method == "PUT":
-        data = request.get_json()
-        for post in POSTS:
-            if post['id'] == id:
-                post["title"] = data.get('title', post['title'])
-                post["content"] = data.get('content', post['content'])
-                return jsonify(post)
-        return jsonify({'error': 'Post not found'}), 404
+    print(id, POSTS)
+    for post in POSTS:
+        if post['id'] == id:
+            data = request.get_json()
+            print(data)
+            post["title"] = data.get('title', post["title"])
+            post["content"] = data.get('content', post["content"])
+            return jsonify(post)
+    return jsonify({'error': 'Post not found'}), 404
+
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5002, debug=True)
